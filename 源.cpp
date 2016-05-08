@@ -16,7 +16,7 @@ struct Plane {
 
 Plane Enemy[numEnemy];
 
-void HideCursor()//Òş²Ø¿ØÖÆÌ¨µÄ¹â±ê 
+void HideCursor()//éšè—æ§åˆ¶å°çš„å…‰æ ‡ 
 {
 	CONSOLE_CURSOR_INFO cursor_info = { 1, 0 };
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursor_info);
@@ -25,7 +25,7 @@ void HideCursor()//Òş²Ø¿ØÖÆÌ¨µÄ¹â±ê
 int main(void)
 {
 	HideCursor();
-	// »ñÈ¡±ê×¼ÊäÈëÊä³öÉè±¸¾ä±ú  
+	// è·å–æ ‡å‡†è¾“å…¥è¾“å‡ºè®¾å¤‡å¥æŸ„  
 	HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	HANDLE hIn = GetStdHandle(STD_INPUT_HANDLE);
 
@@ -34,7 +34,7 @@ int main(void)
 	DWORD			res;
 	COORD			crPos, crHome, crEnemy ,Zero= { 0, 0 };
 	SetConsoleTitle("ThouhouCProject v0.1");
-	printf("[Cursor Position] X: %2lu  Y: %2lu\n", 0, 0);	// ³õÊ¼×´Ì¬
+	printf("[Cursor Position] X: %2lu  Y: %2lu\n", 0, 0);	// åˆå§‹çŠ¶æ€
 
 	WORD att1 = FOREGROUND_RED, att2 = FOREGROUND_BLUE;
 
@@ -78,28 +78,52 @@ int main(void)
 
 	while (1) {
 //		start = clock();
-//		while (clock() - start <= 1000);ÑÓÊ±
+//		while (clock() - start <= 1000);å»¶æ—¶
 		x1 = 60;
 		y1 = 15;
 		Enemy[0].posX = x1;
 		Enemy[0].posY = y1;
 
 //		DWORD dwBytesWritten;
-		FillConsoleOutputAttribute(hOut, att1, 2, { Enemy[0].posX, Enemy[0].posY }, &res);
-		FillConsoleOutputCharacter(hOut, '|', 2, { Enemy[0].posX, Enemy[0].posY }, &res);
 
 		int n=0,i = 0,j=0;
 		while ((Enemy[n].posX != 0) || (Enemy[n].posY != 0)) {
+
 			for (i = 0; i < Enemy[n].Tmax; i++) {
+				
+				FillConsoleOutputAttribute(hOut, att1, 1, { Enemy[0].posX, Enemy[0].posY }, &res);
+				FillConsoleOutputCharacter(hOut, '|', 1, { Enemy[0].posX, Enemy[0].posY }, &res);
+				//setæ•Œæœº
+
 				while (!((Enemy[n].BulletArray[i][j].Y == 0)&& (Enemy[n].BulletArray[i][j].X == 0))) {
 					FillConsoleOutputAttribute(hOut, att2, 1, { Enemy[0].posX+ Enemy[n].BulletArray[i][j].X, Enemy[0].posY + Enemy[n].BulletArray[i][j].Y }, &res);
 					FillConsoleOutputCharacter(hOut, '*', 1,  { Enemy[0].posX + Enemy[n].BulletArray[i][j].X, Enemy[0].posY + Enemy[n].BulletArray[i][j].Y }, &res);
-					j++;
-
+					  j++;
 				}
 				j = 0;
 				start = clock();
-				while (clock() - start <= 1000);
+				while (clock() - start <= 2000);
+			//	if (i>0)	
+				while (!((Enemy[n].BulletArray[i][j].Y == 0) && (Enemy[n].BulletArray[i][j].X == 0))) {
+					FillConsoleOutputCharacter(hOut, ' ', 1, { Enemy[n].posX + Enemy[n].BulletArray[i][j].X, Enemy[n].posY + Enemy[n].BulletArray[i][j].Y }, &res);//æ¸…é™¤ä¸Šä¸€æ¬¡å¼¹å¹•
+					j++;
+				}
+				j = 0;
+				FillConsoleOutputCharacter(hOut, ' ', 1, { Enemy[0].posX, Enemy[0].posY }, &res);//æ¸…é™¤ä¸Šä¸€æ¬¡æ•Œæœº
+				int direct = rand() % 9;
+				switch (direct) {
+					case 1: Enemy[0].posX--; Enemy[0].posY--; break;
+					case 2: Enemy[0].posX--;  break;
+					case 3: Enemy[0].posX--; Enemy[0].posY++; break;
+					case 4:  Enemy[0].posY--; break;
+					case 5: Enemy[0].posX++; break;
+					case 6: Enemy[0].posX++; Enemy[0].posY--; break;
+					case 7: Enemy[0].posX++; break;
+					case 8: Enemy[0].posX++; Enemy[0].posY++; break;
+				default:
+					break;
+				}
+
 			}
 			n++;
 		}
